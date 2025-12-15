@@ -1,9 +1,10 @@
 import { title } from "@/components/primitives";
+import {BasicMap} from "@/app/map/components/BasicMap";
 
 export default function AboutPage() {
   return (
     <div>
-      <h1 className={title()}>About</h1>
+      <BasicMap></BasicMap>
     </div>
   );
 }
