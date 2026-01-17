@@ -35,8 +35,9 @@ model Station {
 }
 
 model Plan {
-    id    Int    @id // "RequestId"
-    stops Stop[]
+    id        Int      @id // "RequestId"
+    stops     Stop[]
+    createdAt DateTime @default(now())
 }
 
 model Stop {
@@ -121,6 +122,192 @@ model Category {
     trainInfos TrainInfo[]
 }
 
-model Change {
-    id Int @id
+// ============================================================================
+// TIMETABLE MODELS (from DB_API schema)
+// ============================================================================
+
+model Timetable {
+    id        String          @id @default(cuid())
+    eva       BigInt
+    station   String
+    messages  Message[]
+    stops     TimetableStop[]
+    createdAt DateTime        @default(now())
+}
+
+model TimetableStop {
+    id          String    @id
+    eva         BigInt
+    timetable   Timetable @relation(fields: [timetableId], references: [id])
+    timetableId String
+    arrival     Event?    @relation("arrival")
+    departure   Event?    @relation("departure")
+
+    connections             Connection[]
+    messages                Message[]
+    historicDelays          HistoricDelay[]
+    historicPlatformChanges HistoricPlatformChange[]
+    reference               Reference?
+    referenceTripRelations  ReferenceTripRelation[]
+    tripLabel               TripLabel?
+
+    @@unique([id, timetableId])
+}
+
+model Event {
+    id              String         @id @default(cuid())
+    cde             String? // Changed distant endpoint
+    clt             String? // Cancellation time (YYMMddHHmm format)
+    cp              String? // Changed platform
+    cpth            String? // Changed path
+    cs              String? // Event status (p=PLANNED, a=ADDED, c=CANCELLED)
+    ct              String? // Changed time (YYMMddHHmm format)
+    dc              Int? // Distant change
+    hi              Int? // Hidden flag
+    l               String? // Line
+    pde             String? // Planned distant endpoint
+    pp              String? // Planned platform
+    ppth            String? // Planned path
+    ps              String? // Planned status
+    pt              String? // Planned time (YYMMddHHmm format)
+    tra             String? // Transition trip id
+    wings           String? // Wing trip ids
+    messages        Message[]
+    arrivalStop     TimetableStop? @relation("arrival", fields: [arrivalStopId], references: [id])
+    arrivalStopId   String?        @unique
+    departureStop   TimetableStop? @relation("departure", fields: [departureStopId], references: [id])
+    departureStopId String?        @unique
+}
+
+model Message {
+    id          String               @id @default(cuid())
+    c           Int? // Code
+    cat         String? // Category
+    del         Int? // Deleted
+    dm          DistributorMessage[]
+    ec          String? // External category
+    elnk        String? // External link
+    ext         String? // External text
+    from        String? // Valid from (YYMMddHHmm format)
+    int         String? // Internal text
+    o           String? // Owner
+    pr          String? // Priority (1=HIGH, 2=MEDIUM, 3=LOW, 4=DONE)
+    t           String // Message type (h=HIM, q=QUALITY_CHANGE, f=FREE, d=CAUSE_OF_DELAY, i=IBIS, u=UNASSIGNED_IBIS, r=DISRUPTION, c=CONNECTION)
+    tl          TripLabel[]
+    to          String? // Valid to (YYMMddHHmm format)
+    ts          String // Timestamp (YYMMddHHmm format)
+    timetable   Timetable            @relation(fields: [timetableId], references: [id])
+    timetableId String
+    stop        TimetableStop?       @relation(fields: [stopId], references: [id])
+    stopId      String?
+    event       Event?               @relation(fields: [eventId], references: [id])
+    eventId     String?
+}
+
+model DistributorMessage {
+    id        String  @id @default(cuid())
+    int       String? // Internal text
+    n         String? // Distributor name
+    t         String? // Distributor type (s=CITY, r=REGION, f=LONG_DISTANCE, x=OTHER)
+    ts        String? // Timestamp (YYMMddHHmm format)
+    message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    messageId String
+}
+
+model TripLabel {
+    id          String         @id @default(cuid())
+    c           String // Category (e.g. ICE, RE)
+    f           String? // Filter flags
+    n           String // Train number
+    o           String // Owner
+    t           String? // Trip type (p, e, z, s, h, n)
+    message     Message?       @relation(fields: [messageId], references: [id])
+    messageId   String?
+    stop        TimetableStop? @relation(fields: [stopId], references: [id])
+    stopId      String?
+    references  Reference[]
+    reference   Reference?     @relation(fields: [referenceId], references: [id])
+    referenceId String?
+}
+
+model Connection {
+    id              String         @id @default(cuid())
+    cs              String // Connection status (w=WAITING, n=TRANSITION, a=ALTERNATIVE)
+    eva             BigInt
+    ts              String // Timestamp (YYMMddHHmm format)
+    stop            TimetableStop  @relation(fields: [stopId], references: [id])
+    stopId          String
+    s               TimetableStop? @relation(fields: [timetableStopId], references: [id]) // Reference to connected stop
+    ref             TimetableStop? @relation(fields: [timetableStopId], references: [id]) // Reference stop
+    timetableStopId String?
+}
+
+model HistoricDelay {
+    id     String        @id @default(cuid())
+    ar     String? // Arrival event (YYMMddHHmm format)
+    cod    String? // Detailed description of delay cause
+    dp     String? // Departure event (YYMMddHHmm format)
+    src    String? // Delay source (L, NA, NM, V, IA, IM, A)
+    ts     String // Timestamp (YYMMddHHmm format)
+    stop   TimetableStop @relation(fields: [stopId], references: [id])
+    stopId String
+}
+
+model HistoricPlatformChange {
+    id     String        @id @default(cuid())
+    ar     String? // Arrival platform
+    cot    String? // Detailed cause of track change
+    dp     String? // Departure platform
+    ts     String // Timestamp (YYMMddHHmm format)
+    stop   TimetableStop @relation(fields: [stopId], references: [id])
+    stopId String
+}
+
+model Reference {
+    id          String        @id @default(cuid())
+    tl          TripLabel?    @relation(fields: [tripLabelId], references: [id]) // Trip label
+    rt          TripLabel[] // Reference trip labels
+    stop        TimetableStop @relation(fields: [stopId], references: [id])
+    stopId      String        @unique
+    tripLabelId String?
+}
+
+model ReferenceTripRelation {
+    id              String        @id @default(cuid())
+    rt              ReferenceTrip @relation(fields: [referenceTripId], references: [id])
+    rts             String // Reference trip status (b=BEFORE, e=END, c=BETWEEN, s=START, a=AFTER)
+    stop            TimetableStop @relation(fields: [stopId], references: [id])
+    stopId          String
+    referenceTripId String
+}
+
+model ReferenceTrip {
+    id     String             @id @default(cuid())
+    c      Boolean // Cancellation flag
+    tripId String // Id
+    rtl    ReferenceTripLabel @relation(fields: [referenceTripLabelId], references: [id])
+    ea     ReferenceTripStop  @relation(fields: [referenceTripStopSdId], references: [id])
+    sd     ReferenceTripStop  @relation(fields: [referenceTripStopEaId], references: [id])
+
+    referenceTripStopSdId String
+    referenceTripStopEaId String
+
+    referenceTripLabelId   String
+    referenceTripRelations ReferenceTripRelation[]
+}
+
+model ReferenceTripStop {
+    id             String          @id @default(cuid())
+    eva            BigInt
+    i              Int // Index
+    n              String // Name
+    pt             String // Planned time (YYMMddHHmm format)
+    referenceTrips ReferenceTrip[]
+}
+
+model ReferenceTripLabel {
+    id             String          @id @default(cuid())
+    c              String // Category
+    n              String // Train number
+    referenceTrips ReferenceTrip[]
 }
