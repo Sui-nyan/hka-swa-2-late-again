@@ -7,10 +7,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Change {
-    id Int @id
-}
-
 model Station {
     // def better_get_station(pattern: str) -> list:
     //     """Returns a list of stations matching the pattern."""
@@ -29,18 +25,17 @@ model Station {
     //         }
     //         for s in stations
     //     ]
-    eva        Int       @id
-    name       String
-    ds100      String    @unique
-    meta       Station[] // Eva station numbers of connected stations
-    p          String[] // platforms
-    isDb       Boolean   @default(false)
-    station    Station?  @relation(fields: [stationEva], references: [eva])
-    stationEva Int?
+    eva       Int      @id
+    name      String
+    ds100     String   @unique // Station Code
+    meta      String[] // Eva station numbers of connected stations
+    p         String[] // platforms
+    isDb      Boolean  @default(false)
+    platforms String[]
 }
 
 model Plan {
-    id    Int
+    id    Int    @id // "RequestId"
     stops Stop[]
 }
 
@@ -60,8 +55,8 @@ model Stop {
     dp          Departure
     tl          TrainInfo @relation(fields: [trainInfoId], references: [id])
     plan        Plan      @relation(fields: [planId], references: [id])
-    planId      Int
     trainInfoId Int
+    planId      Int
 }
 
 model Arrival {
@@ -72,9 +67,10 @@ model Arrival {
     //             "pt (plannedTime)": ar.get("pt"), # planned time
     //             "l (line)": ar.get("l"), # line
     //         }
-    pt     DateTime // planned time
-    l      Int // line
-    stop   Stop     @relation(fields: [stopId], references: [id])
+    pt DateTime // planned time
+    l  Int // line
+
+    stop   Stop @relation(fields: [stopId], references: [id])
     stopId Int
 }
 
@@ -86,13 +82,13 @@ model Departure {
     //             "pt (plannedTime)": dp.get("pt"), # planned time
     //             "l (line)": dp.get("l"), # line
     //         }
+    pp   String
+    ppth String[]
+    pt   DateTime
+    l    String
 
-    stop   Stop     @relation(fields: [stopId], references: [id])
+    stop   Stop @relation(fields: [stopId], references: [id])
     stopId Int
-    pp     String
-    ppth   String[]
-    pt     DateTime
-    l      String
 }
 
 model TrainInfo {
@@ -105,16 +101,26 @@ model TrainInfo {
     //         "t (tripType)": tl.get("t"), # trip type {p,e,z,s,h,n}
     //     }
 
-    id       Int      @id
-    stop     Stop     @relation(fields: [stopId], references: [id])
-    stopId   Int
-    category Category @relation(fields: [c], references: [c])
+    id Int @id
 
     c String
     n String
+    f String // FilterFlag
+    o String // Owner
+    t String // triptype
+
+    category Category @relation(fields: [c], references: [c])
+
+    stop   Stop @relation(fields: [stopId], references: [id])
+    stopId Int
 }
 
 model Category {
-    c          String      @unique
+    c String @unique
+
     trainInfos TrainInfo[]
+}
+
+model Change {
+    id Int @id
 }
