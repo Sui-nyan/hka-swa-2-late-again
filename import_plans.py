@@ -3,6 +3,7 @@ import psycopg2
 import requests
 import os
 import dotenv
+from dotenv import dotenv_values
 
 import datetime
 from bs4 import BeautifulSoup
@@ -15,6 +16,22 @@ print(f"{DATABASE_URL=}")
 
 if DATABASE_URL is None:
     raise ValueError("no db url")
+
+config = dotenv_values(".env")
+CLIENT_ID = config.get("CLIENT_ID")
+API_KEY = config.get("API_KEY")
+base_url = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/"
+
+headers = {
+    "DB-Client-Id": CLIENT_ID,
+    "DB-Api-Key": API_KEY,
+    "accept": "application/xml"
+}
+
+def get_stations(pattern: str):
+    url = base_url + f"station/{pattern}"
+    response = requests.get(url, headers=headers)
+    return response.text
 
 def yymmddhhmm_to_date(s: str) -> datetime.date:
     return datetime.datetime(
@@ -157,28 +174,25 @@ def import_plan(evaNo: str, dateYYMMDD: str, hourHH: str):
     for stop in stops:
         insert_stop(cursor, stop, plan_id)
     
-    conn.commit()
+    # conn.commit()
     cursor.close()
     conn.close()
     print(f"Imported {len(stops)} stops")
 
 if __name__ == "__main__":
-    from dotenv import dotenv_values
-
-    config = dotenv_values(".env.local")
-    CLIENT_ID = config.get("CLIENT_ID")
-    API_KEY = config.get("API_KEY")
-    base_url = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/"
-
-    headers = {
-        "DB-Client-Id": CLIENT_ID,
-        "DB-Api-Key": API_KEY,
-        "accept": "application/xml"
-    }
-
-    def get_stations(pattern: str):
-        url = base_url + f"station/{pattern}"
-        response = requests.get(url, headers=headers)
-        return response.text
-        
-    import_plan('8000191', '260118', '15')
+    EVA_KARLSRUHE = '8000191'
+    EVA_NEUBURG = "8004254"
+    
+    # EVA_NEUBURG_IDK_INVALID = '788711'
+    
+    for hh in range(24): # 0~23
+        for dd in range(17, 20): # 17, 18, 19
+            for eva in [EVA_KARLSRUHE, EVA_NEUBURG]:
+                try:
+                    yymmdd = '2601' + str(dd)
+                    hh = str(hh)
+                    
+                    print(f"Fetching {eva} ({yymmdd} @ {hh}:00)")
+                    import_plan(eva, yymmdd, hh)
+                except Exception as e:
+                    print(f'Failed: {e}')
