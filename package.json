@@ -56,7 +56,6 @@
     "@react-aria/ssr": "3.9.10",
     "@react-aria/visually-hidden": "3.8.28",
     "clsx": "2.1.1",
-    "db-vendo-client": "^6.10.8",
     "dotenv": "^17.2.3",
     "framer-motion": "11.18.2",
     "hafas-rest-api": "^5.1.3",
