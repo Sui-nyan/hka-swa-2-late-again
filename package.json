@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --fix",
-    "poll": "npx ts-node services/start-polling.ts",
     "pg": "docker run --name postgres-db -e POSTGRES_PASSWORD=mypassword -e POSTGRES_USER=myuser -e POSTGRES_DB=mydatabase -p 5432:5432  -v ./pg-data:/var/lib/postgresql/data -d postgres"
   },
   "dependencies": {
