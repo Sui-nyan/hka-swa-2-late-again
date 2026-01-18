@@ -4,6 +4,7 @@ import React from "react";
 import { useTheme } from "next-themes";
 import { StationPoint } from "@/components/types";
 import {BarChart} from "@/components/BarChart";
+import {Button} from "@heroui/button";
 
 interface Props {
     selected: StationPoint;
@@ -42,24 +43,21 @@ export function StationModal({ selected, onClickAction }: Props) {
         fontSize: 12,
         color: dark ? "#ccc" : "#555",
     };
-    const buttonStyle: React.CSSProperties = {
-        marginTop: 8,
-        background: dark ? "#0a84ff" : "#0078d4",
-        border: "none",
-        color: "white",
-        padding: "6px 10px",
-        borderRadius: 4,
-        cursor: "pointer",
-    };
 
     return (
         <div style={containerStyle}>
             <div style={titleStyle}>{selected.name}</div>
             <div style={subtitleStyle}>Statistiken</div>
-            <BarChart data={data} width={400} height={400} />
-            <button onClick={onClickAction} style={buttonStyle}>
-                Close
-            </button>
+            <div className="flex flex-row gap-4 justify-center align-middle items-center">
+                <BarChart data={data} width={400} height={400} />
+                <div>
+                    <p style={{ marginBottom: 4 }}>Durchschnittliche Verstpätung: 5 min</p>
+                    <p style={{ marginBottom: 4 }}>Tägliche Verbindungen: 120</p>
+                </div>
+            </div>
+            <Button onPress={onClickAction} variant="solid" className="mt-4">
+                Schließen
+            </Button>
         </div>
     );
 }

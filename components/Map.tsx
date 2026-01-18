@@ -4,7 +4,7 @@ import {geoMercator, geoPath} from 'd3-geo';
 import {feature} from 'topojson-client';
 import {StationModal} from "@/components/StationModal";
 import {StationPoint} from "@/components/types";
-
+import {Tooltip} from "@heroui/tooltip";
 
 
 interface MapProps {
@@ -71,18 +71,9 @@ const Map: React.FC<MapProps> = ({ data, stations = [], width = 800, height = 50
                                 aria-label={s.name}
                                 role="button"
                             >
-                                <circle r={isHovered ? 6 : 4} fill="#2596be" stroke="#fff" strokeWidth={1.2} />
-                                {isHovered && (
-                                    <text
-                                        x={8}
-                                        y={4}
-                                        fontSize={12}
-                                        fill="#111"
-                                        style={{ pointerEvents: 'none', fontFamily: 'Arial, sans-serif' }}
-                                    >
-                                        {s.name}
-                                    </text>
-                                )}
+                                <Tooltip content={s.name}>
+                                    <circle r={isHovered ? 6 : 4} fill="#2596be" stroke="#fff" strokeWidth={1.2} />
+                                </Tooltip>
                             </g>
                         );
                     })}
