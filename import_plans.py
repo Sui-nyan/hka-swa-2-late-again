@@ -172,7 +172,6 @@ def import_plan(evaNo: str, dateYYMMDD: str, hourHH: str):
     plan_id = cursor.fetchone()[0]
 
     for stop in stops:
-        print(stop)
         insert_stop(cursor, stop, plan_id)
     
     # conn.commit()
