@@ -13,29 +13,27 @@ model Station {
     meta  String[] // Eva station numbers of connected stations
     p     String[] // platforms
     isDb  Boolean  @default(false)
+
+    plans Plan[]
 }
 
 model Plan {
-    id        Int      @id // "RequestId"
-    stops     Stop[]
-    createdAt DateTime @default(now())
+    id             Int      @id @default(autoincrement()) // "RequestId"
+    eva            Int
+    targetDatetime String
+    createdAt      DateTime @default(now())
+
+    stops   Stop[]
+    station Station @relation(references: [eva], fields: [eva])
+
+    @@unique([eva, targetDatetime])
 }
 
 model Stop {
-    // def parse_stop(s):
-    //     ar = parse_ar(s.ar) if s.ar else None # arrival
-    //     dp = parse_dp(s.dp) if s.dp else None # departure
-    //     tl = parse_tl(s.tl) if s.tl else None # track/ platform
-    //     return {
-    //         "id": s.get("id"),
-    //         "ar (arrival)": ar,
-    //         "dp (departure)": dp,
-    //         "tl (trainInfoTuple)": tl
-    //     }
-    id   Int        @id
+    id   String     @id
     ar   Arrival?
     dp   Departure?
-    tl   TrainInfo  @relation(fields: [trainInfoId], references: [id])
+    tl   TrainInfo? @relation(fields: [trainInfoId], references: [id])
     plan Plan       @relation(fields: [planId], references: [id])
 
     trainInfoId Int
@@ -43,51 +41,33 @@ model Stop {
 }
 
 model Arrival {
-    pt DateTime // planned time
-    l  Int // line
+    pt   DateTime // planned time
+    ppth String[] // planned path
 
     // Backlinks
-    stop   Stop @relation(fields: [stopId], references: [id])
-    stopId Int  @unique
+    stop   Stop   @relation(fields: [stopId], references: [id])
+    stopId String @unique
 }
 
 model Departure {
-    pp   String
-    ppth String[]
-    pt   DateTime
-    l    String
+    pt   DateTime // planned time
+    ppth String[] // planned path
 
     // Backlinks
-    stop   Stop @relation(fields: [stopId], references: [id])
-    stopId Int  @unique
+    stop   Stop   @relation(fields: [stopId], references: [id])
+    stopId String @unique
 }
 
 model TrainInfo {
-    // def parse_tl(tl: BeautifulSoup):
-    //     return {
-    //         "c (category)": tl.get("c"), # e.g. ICE, RE
-    //         "n (trainNumber)": tl.get("n"), # train number
-    //         "f (filterFlag)": tl.get("f"), # filter flag
-    //         "o (owner)": tl.get("o"), # owner
-    //         "t (tripType)": tl.get("t"), # trip type {p,e,z,s,h,n}
-    //     }
+    id Int @id @default(autoincrement())
 
-    id Int @id
+    c String?
+    n String?
+    f String? // FilterFlag
+    o String? // Owner
+    t String? // triptype
 
-    c String
-    n String
-    f String // FilterFlag
-    o String // Owner
-    t String // triptype
-
-    category Category @relation(fields: [c], references: [c])
-    stops    Stop[]
-}
-
-model Category {
-    c String @unique
-
-    trainInfos TrainInfo[]
+    stops Stop[]
 }
 
 // // ============================================================================
