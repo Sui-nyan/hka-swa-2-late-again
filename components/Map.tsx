@@ -90,7 +90,7 @@ const Map: React.FC<MapProps> = ({ data, stations = [], width = 800, height = 50
             </svg>
 
             {selected && (
-                <StationModal selected={selected} onClick={() => setSelected(null)}/>
+                <StationModal selected={selected} onClickAction={() => setSelected(null)}/>
             )}
         </div>
     );
