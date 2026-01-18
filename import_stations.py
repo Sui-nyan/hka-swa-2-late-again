@@ -4,6 +4,8 @@ import requests
 import os
 import dotenv
 
+from dotenv import dotenv_values
+
 dotenv.load_dotenv('.env.local')
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -13,7 +15,23 @@ print(f"{DATABASE_URL=}")
 if DATABASE_URL is None:
     raise ValueError("no db url")
 
-def import_stations(xml_response):
+config = dotenv_values(".env.local")
+CLIENT_ID = config.get("CLIENT_ID")
+API_KEY = config.get("API_KEY")
+base_url = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/"
+
+headers = {
+    "DB-Client-Id": CLIENT_ID,
+    "DB-Api-Key": API_KEY,
+    "accept": "application/xml"
+}
+
+def get_stations(pattern: str):
+    url = base_url + f"station/{pattern}"
+    response = requests.get(url, headers=headers)
+    return response.text
+
+def import_stations(xml_response, skipconfirm=False):
     """Parse XML response and insert into database"""
     root = ET.fromstring(xml_response)
     
@@ -27,6 +45,16 @@ def import_stations(xml_response):
     def listify_vbar(s: str) -> list:
         return [p.strip() for p in s.split("|")]
 
+    num_stations = len(root.findall("station"))
+    print(f"Found ({num_stations}) stations")
+    if not skipconfirm:
+        for station in root.findall("station"):
+            print(station.get('name'), station.get('eva'))
+    
+    if not skipconfirm and (num_stations == 0 or input("Proceed? (y/N)") != 'y'):
+        print("Cancelled")
+        return
+    
     for station in root.findall("station"):
         try:
             print(station.get('name'), station.get('db'))
@@ -49,25 +77,10 @@ def import_stations(xml_response):
     conn.commit()
     cursor.close()
     conn.close()
-    print(f"Imported {len(root.findall('station'))} stations")
+    print(f"Imported stations")
 
+def get_and_insert_stations(searchpattern: str):
+    import_stations(get_stations(searchpattern), skipconfirm=True)
+    
 if __name__ == "__main__":
-    from dotenv import dotenv_values
-
-    config = dotenv_values(".env.local")
-    CLIENT_ID = config.get("CLIENT_ID")
-    API_KEY = config.get("API_KEY")
-    base_url = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/"
-
-    headers = {
-        "DB-Client-Id": CLIENT_ID,
-        "DB-Api-Key": API_KEY,
-        "accept": "application/xml"
-    }
-
-    def get_stations(pattern: str):
-        url = base_url + f"station/{pattern}"
-        response = requests.get(url, headers=headers)
-        return response.text
-        
-    import_stations(get_stations("Karlsruhe Hbf"))
+    import_stations(get_stations("*"), True)
