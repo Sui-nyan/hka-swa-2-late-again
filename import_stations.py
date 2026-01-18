@@ -6,7 +6,7 @@ import dotenv
 
 from dotenv import dotenv_values
 
-dotenv.load_dotenv('.env.local')
+dotenv.load_dotenv('.env')
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
