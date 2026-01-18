@@ -8,9 +8,10 @@ from dotenv import dotenv_values
 import datetime
 from bs4 import BeautifulSoup
 
-dotenv.load_dotenv('.env.local')
+dotenv.load_dotenv('.env')
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL").replace("db", "localhost")
+
 
 print(f"{DATABASE_URL=}")
 
@@ -208,7 +209,7 @@ if __name__ == "__main__":
     
     # EVA_NEUBURG_IDK_INVALID = '788711'
     
-    for (yymmdd, hh) in get_timeslots(260118, 18, dtBefore=3, dtAfter=0):
+    for (yymmdd, hh) in get_timeslots(260121, 18, dtBefore=8, dtAfter=24):
         for eva in [EVA_KARLSRUHE, EVA_NEUBURG]:
             try:                
                 print(f"Fetching {eva} ({yymmdd} @ {hh}:00)")

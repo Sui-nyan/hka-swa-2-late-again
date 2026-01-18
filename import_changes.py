@@ -1,4 +1,3 @@
-import xml.etree.ElementTree as ET
 import psycopg2
 import requests
 import os
@@ -8,9 +7,9 @@ from dotenv import dotenv_values
 import datetime
 from bs4 import BeautifulSoup
 
-dotenv.load_dotenv('.env.local')
+dotenv.load_dotenv('.env')
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL").replace("db", "localhost")
 
 print(f"{DATABASE_URL=}")
 
@@ -27,6 +26,8 @@ headers = {
     "DB-Api-Key": API_KEY,
     "accept": "application/xml"
 }
+
+BeautifulSoup("<a></a>", "xml")
 
 def get_stations(pattern: str):
     url = base_url + f"station/{pattern}"
@@ -213,7 +214,7 @@ def import_full_changes(evaNo: str):
         # print(stop)
         insert_stop_change(cursor, stop, stop["id"])
     
-    # conn.commit()
+    conn.commit()
     cursor.close()
     conn.close()
     print(f"Imported {len(stopChanges)} stops")
@@ -234,21 +235,32 @@ def import_recent_changes(evaNo: str):
     conn.commit()
     cursor.close()
     conn.close()
-    print(f"Imported {len(stopChanges)} stops")
+    print(f"Imported {len(stopChanges)} stops [{evaNo}]")
 
 if __name__ == "__main__":
     import time
     
     EVA_KARLSRUHE = '8000191'
     EVA_NEUBURG = "8004254"
+    evas = [
+        EVA_KARLSRUHE,
+        EVA_NEUBURG,
+        "8004333", # Stuttgart
+        "8000002", # Aalen
+        "8000170", # Ulm
+    ]
     
     print("Pulling full changes")
-    for eva in [EVA_NEUBURG, EVA_KARLSRUHE]:
+    for eva in evas:
         import_full_changes(eva)
-    
+
+    last_time = datetime.datetime.now()
     while True:
-        print("Pulling recent changes:", datetime.datetime.now())
-        for eva in [EVA_NEUBURG, EVA_KARLSRUHE]:
-            import_recent_changes(eva)
+        now = datetime.datetime.now()
+        if (now - last_time).total_seconds() > 30:
+            print("Pulling recent changes:", now)
+            for eva in evas:
+                import_recent_changes(eva)
+            last_time = now
             
-        time.sleep(30) # wait 30s
+        time.sleep(1) # wait 30s

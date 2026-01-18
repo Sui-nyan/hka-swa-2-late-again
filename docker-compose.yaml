@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: myuser
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg-data:/var/lib/postgresql
+    restart: unless-stopped
+  node-dev:
+    image: node:24-alpine
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: sh
+    command: >
+      -c "
+        echo 'Node version:' && node -v &&
+        echo 'Enabling pnpm...' && corepack enable pnpm &&
+        echo 'pnpm version:' && pnpm -v
+        sh
+      "
+    tty: true
+    stdin_open: true
