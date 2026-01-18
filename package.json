@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --fix",
-    "pg": "docker run --name postgres-db -e POSTGRES_PASSWORD=mypassword -e POSTGRES_USER=myuser -e POSTGRES_DB=mydatabase -p 5432:5432  -v ./pg-data:/var/lib/postgresql/data -d postgres"
+    "pg-docker": "docker run --name postgres-db -e POSTGRES_PASSWORD=mypassword -e POSTGRES_USER=myuser -e POSTGRES_DB=mydatabase -p 5432:5432  -v ./pg-data:/var/lib/postgresql/data -d postgres",
+    "pg": "docker container start postgres-db && docker ps"
   },
   "dependencies": {
     "@heroui/accordion": "2.2.24",
