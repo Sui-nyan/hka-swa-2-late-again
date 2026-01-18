@@ -1,73 +1,81 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
+}
+
+model SimplifiedStation {
+  evaNumber             Int @id
+  name                  String
+  productLine           String
+  lat Int
+  long Int
 }
 
 model Station {
-    eva   Int      @id
-    name  String
-    ds100 String   @unique // Station Code
-    meta  String[] // Eva station numbers of connected stations
-    p     String[] // platforms
-    isDb  Boolean  @default(false)
+  eva   Int      @id
+  name  String
+  ds100 String   @unique // Station Code
+  meta  String[]// Eva station numbers of connected stations
+  p     String[]// platforms
+  isDb  Boolean  @default(false)
 
-    plans Plan[]
+  plans Plan[]
 }
 
 model Plan {
-    id             Int      @id @default(autoincrement()) // "RequestId"
-    eva            Int
-    targetDatetime String
-    createdAt      DateTime @default(now())
+  id             Int      @id @default(autoincrement()) // "RequestId"
+  eva            Int
+  targetDatetime String
+  createdAt      DateTime @default(now())
 
-    stops   Stop[]
-    station Station @relation(references: [eva], fields: [eva])
+  stops   Stop[]
+  station Station @relation(references: [eva], fields: [eva])
 
-    @@unique([eva, targetDatetime])
+  @@unique([eva, targetDatetime])
 }
 
 model Stop {
-    id   String     @id
-    ar   Arrival?
-    dp   Departure?
-    tl   TrainInfo? @relation(fields: [trainInfoId], references: [id])
-    plan Plan       @relation(fields: [planId], references: [id])
+  id   String     @id
+  ar   Arrival?
+  dp   Departure?
+  tl   TrainInfo? @relation(fields: [trainInfoId], references: [id])
+  plan Plan       @relation(fields: [planId], references: [id])
 
-    trainInfoId Int
-    planId      Int
+  trainInfoId Int
+  planId      Int
 }
 
 model Arrival {
-    pt   DateTime // planned time
-    ppth String[] // planned path
+  pt   DateTime // planned time
+  ppth String[] // planned path
 
-    // Backlinks
-    stop   Stop   @relation(fields: [stopId], references: [id])
-    stopId String @unique
+  // Backlinks
+  stop   Stop   @relation(fields: [stopId], references: [id])
+  stopId String @unique
 }
 
 model Departure {
-    pt   DateTime // planned time
-    ppth String[] // planned path
+  pt   DateTime // planned time
+  ppth String[] // planned path
 
-    // Backlinks
-    stop   Stop   @relation(fields: [stopId], references: [id])
-    stopId String @unique
+  // Backlinks
+  stop   Stop   @relation(fields: [stopId], references: [id])
+  stopId String @unique
 }
 
 model TrainInfo {
-    id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-    c String?
-    n String?
-    f String? // FilterFlag
-    o String? // Owner
-    t String? // triptype
+  c String?
+  n String?
+  f String? // FilterFlag
+  o String? // Owner
+  t String? // triptype
 
-    stops Stop[]
+  stops Stop[]
 }
 
 // // ============================================================================
