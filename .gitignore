@@ -43,3 +43,4 @@ bun.lockb
 
 # database
 pg-data/**
+.env
