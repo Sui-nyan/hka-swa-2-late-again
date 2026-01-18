@@ -57,7 +57,6 @@ def import_stations(xml_response, skipconfirm=False):
     
     for station in root.findall("station"):
         try:
-            print(station.get('name'), station.get('db'))
             cursor.execute(
                 """INSERT INTO "Station" (ds100, eva, name, meta, p, "isDb") 
                     VALUES (%s, %s, %s, %s, %s, %s)

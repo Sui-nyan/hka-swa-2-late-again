@@ -174,25 +174,44 @@ def import_plan(evaNo: str, dateYYMMDD: str, hourHH: str):
     for stop in stops:
         insert_stop(cursor, stop, plan_id)
     
-    # conn.commit()
+    conn.commit()
     cursor.close()
     conn.close()
     print(f"Imported {len(stops)} stops")
 
+
+def get_timeslots(yymmdd: int, hh:int, dtBefore:int, dtAfter:int) -> tuple[str, str]:
+    results = []
+    # before
+    for dt in range(-dtBefore, 0, 1):
+        vdate = yymmdd
+        vhour = hh + dt
+        while vhour < 0:
+            vhour += 24
+            vdate -= 1
+        results.append((vdate, vhour))
+    
+    # now & later
+    for dt in range(0, dtAfter + 1):
+        vdate = yymmdd
+        vhour = hh + dt
+        while vhour > 23:
+            vdate += 1
+            vhour -= 24
+        results.append((vdate, vhour))
+
+    return results
+        
 if __name__ == "__main__":
     EVA_KARLSRUHE = '8000191'
     EVA_NEUBURG = "8004254"
     
     # EVA_NEUBURG_IDK_INVALID = '788711'
     
-    for hh in range(24): # 0~23
-        for dd in range(17, 20): # 17, 18, 19
-            for eva in [EVA_KARLSRUHE, EVA_NEUBURG]:
-                try:
-                    yymmdd = '2601' + str(dd)
-                    hh = str(hh)
-                    
-                    print(f"Fetching {eva} ({yymmdd} @ {hh}:00)")
-                    import_plan(eva, yymmdd, hh)
-                except Exception as e:
-                    print(f'Failed: {e}')
+    for (yymmdd, hh) in get_timeslots(260118, 18, dtBefore=3, dtAfter=0):
+        for eva in [EVA_KARLSRUHE, EVA_NEUBURG]:
+            try:                
+                print(f"Fetching {eva} ({yymmdd} @ {hh}:00)")
+                import_plan(eva, yymmdd, hh)
+            except Exception as e:
+                print(f'Failed: {e}')
