@@ -1,0 +1,40 @@
+{
+  "connections": [
+    {
+      "startStation": {
+        "name": "Karlsruhe Hbf",
+        "expectedArrival": "2024-06-15T08:30:00",
+        "actualArrival": "2024-06-15T08:32:00"
+      },
+        "endStation": {
+        "name": "Mannheim Hbf",
+        "expectedArrival": "2024-06-15T09:15:00",
+        "actualArrival": "2024-06-15T09:14:00"
+        }
+    },
+    {
+      "startStation": {
+        "name": "Karlsruhe Hbf",
+        "expectedArrival": "2024-06-15T09:30:00",
+        "actualArrival": "2024-06-15T09:30:00"
+      },
+      "endStation": {
+        "name": "Mannheim Hbf",
+        "expectedArrival": "2024-06-15T10:15:00",
+        "actualArrival": "2024-06-15T10:14:00"
+      }
+    },
+    {
+      "startStation": {
+        "name": "Karlsruhe Hbf",
+        "expectedArrival": "2024-06-15T11:30:00",
+        "actualArrival": "2024-06-15T11:40:00"
+      },
+      "endStation": {
+        "name": "Mannheim Hbf",
+        "expectedArrival": "2024-06-15T12:15:00",
+        "actualArrival": "2024-06-15T12:44:00"
+      }
+    }
+  ]
+}
