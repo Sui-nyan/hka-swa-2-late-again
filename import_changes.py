@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 dotenv.load_dotenv('.env')
 
+# DATABASE_URL = os.getenv("DATABASE_URL")
 DATABASE_URL = os.getenv("DATABASE_URL").replace("db", "localhost")
 
 print(f"{DATABASE_URL=}")
@@ -26,8 +27,6 @@ headers = {
     "DB-Api-Key": API_KEY,
     "accept": "application/xml"
 }
-
-BeautifulSoup("<a></a>", "xml")
 
 def get_stations(pattern: str):
     url = base_url + f"station/{pattern}"

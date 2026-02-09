@@ -8,6 +8,7 @@ from dotenv import dotenv_values
 
 dotenv.load_dotenv('.env')
 
+# DATABASE_URL = os.getenv("DATABASE_URL")
 DATABASE_URL = os.getenv("DATABASE_URL").replace("db", "localhost")
 
 print(f"{DATABASE_URL=}")
