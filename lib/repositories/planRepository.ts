@@ -19,3 +19,5 @@ class PlanRepository implements Repository<number, Plan> {
     return plan;
   }
 }
+
+export const planRepository = new PlanRepository();

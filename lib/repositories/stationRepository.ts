@@ -14,3 +14,5 @@ class StationRepository implements Repository<number, Station> {
     return station;
   }
 }
+
+export const stationRepository = new StationRepository();
