@@ -8,14 +8,16 @@ from dotenv import dotenv_values
 
 dotenv.load_dotenv('.env')
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL").replace("db", "localhost")
 
 print(f"{DATABASE_URL=}")
 
 if DATABASE_URL is None:
     raise ValueError("no db url")
 
-config = dotenv_values(".env.local")
+
+config = dotenv_values(".env")
 CLIENT_ID = config.get("CLIENT_ID")
 API_KEY = config.get("API_KEY")
 base_url = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/"
@@ -82,4 +84,6 @@ def get_and_insert_stations(searchpattern: str):
     import_stations(get_stations(searchpattern), skipconfirm=True)
     
 if __name__ == "__main__":
-    import_stations(get_stations("*"), True)
+    res = get_stations("*")
+    print(res)
+    import_stations(res)
