@@ -45,3 +45,5 @@ bun.lockb
 pg-data/**
 .env
 /.pnpm-store
+
+prisma/generated

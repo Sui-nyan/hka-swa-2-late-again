@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --fix",
+    "generate": "prisma generate",
     "pg-docker": "docker run --name postgres-db -e POSTGRES_PASSWORD=mypassword -e POSTGRES_USER=myuser -e POSTGRES_DB=mydatabase -p 5432:5432  -v ./pg-data:/var/lib/postgresql -d postgres",
     "pg": "docker container start postgres-db && docker ps"
   },
