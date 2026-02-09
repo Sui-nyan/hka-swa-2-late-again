@@ -36,7 +36,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.pnpm-store
 pnpm-lock.yaml
 yarn.lock
 package-lock.json
@@ -45,4 +44,4 @@ bun.lockb
 # database
 pg-data/**
 .env
-
+/.pnpm-store
