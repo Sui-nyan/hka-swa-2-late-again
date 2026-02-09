@@ -3,7 +3,7 @@ import { prisma } from "../prisma";
 
 class StationRepository implements Repository<number, Station> {
   async getAll(): Promise<Station[]> {
-    throw new Error("Method not implemented.");
+    return await prisma.station.findMany();
   }
   async getOne(eva: number) {
     const station = await prisma.station.findUnique({
