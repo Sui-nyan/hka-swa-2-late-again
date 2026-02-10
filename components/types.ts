@@ -1,0 +1,1 @@
+export type StationPoint = { id: string | number; name: string; coordinates: [number, number] };

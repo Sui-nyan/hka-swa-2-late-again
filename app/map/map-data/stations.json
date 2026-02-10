@@ -1,0 +1,100 @@
+{
+  "stations": [
+    {
+      "name": "Aachen Hbf",
+      "evaNumbers": [
+        {
+          "number": 8000001,
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              6.091499,
+              50.7678
+            ]
+          },
+          "isMain": true
+        }
+      ]
+    },
+    {
+      "name": "Aalen Hbf",
+      "evaNumbers": [
+        {
+          "number": 8000002,
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              10.096271,
+              48.841013
+            ]
+          },
+          "isMain": true
+        }
+      ]
+    },
+    {
+      "name": "Melbach",
+      "evaNumbers": [
+        {
+          "number": 8003953,
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              8.81151795,
+              50.3788913
+            ]
+          },
+          "isMain": true
+        }
+      ]
+    },
+    {
+      "name": "Minden (Westf)",
+      "evaNumbers": [
+        {
+          "number": 8000252,
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              8.934728,
+              52.290138
+            ]
+          },
+          "isMain": true
+        }
+      ]
+    },
+    {
+      "name": "Mering",
+      "evaNumbers": [
+        {
+          "number": 8003982,
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              10.988291,
+              48.262698
+            ]
+          },
+          "isMain": true
+        }
+      ]
+    },
+    {
+      "name": "Montabaur",
+      "evaNumbers": [
+        {
+          "number": 8000667,
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              7.825333,
+              50.444834
+            ]
+          },
+          "isMain": true
+        }
+      ]
+    }
+  ]
+}
