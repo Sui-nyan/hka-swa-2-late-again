@@ -6,7 +6,6 @@ import {StationPoint} from "@/components/types";
 import {Station} from "@/types";
 
 export default async function AboutPage() {
-    const mapData = require('../map-data/de.json');
     const cacheKey = '__stationsCache';
     let stationsData = (globalThis as any)[cacheKey] as any | undefined;
 
