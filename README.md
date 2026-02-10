@@ -39,28 +39,50 @@ Das Abfragen und Speichern von Daten der Deutschen Bahn API erfolgt seperat übe
 Das System verfolgt zwei zentrale Use Cases: Zum einen eine interaktive Heatmap, die Bahnhöfe nach ihrer relativen Verspätungsquote farblich darstellt und sich dynamisch nach Verkehrstyp (Nah-/Fernverkehr/alle), Ankunft/Abfahrt und Datum filtern lässt, um schnell problematische Abschnitte im Netz zu identifizieren.
 Zum anderen eine Verbindungsauswertung, die es Nutzern ermöglicht, konkrete Reisen (inkl. Umstiegen) zu abonnieren und für diese historische Pünktlichkeitsstatistiken, zeitliche Muster sowie alternative Routen bereitzustellen – nützlich zur Reiseplanung, Abschätzung von Ausfallrisiken und zur Vorbereitung von Entschädigungsanträgen. Beide Funktionen bieten aggregierte Kennzahlen, Visualisierungen und Exportmöglichkeiten sowie die Option, Benachrichtigungen bei relevanten Änderungen zu erhalten, sodass Pendler, Gelegenheitsreisende und Forschende datenbasierte Entscheidungen treffen können.
 
+#### User Journey
+1. Student möchte in der vorlesungsfreien Zeit nach Hause reisen.
+2. Student hat kein Geld für ein ICE-Ticket für eine direkte Verbindung und schaut sich Alternativen im Nahverkehr an
+3. Student schaut sich die Statistiken der letzten zwei Wochen für die vorgenommene Strecke an
+4. Student sieht erkennt, dass über Stadt A häufiger Bahnen verspätet sind als über Stadt B und die Bahnen dazu tendieren am wochentag pünktlicher anzukommen als am Wochenende. 
+5. Student entscheidet sich für die Reise über Stadt B am nächsten Dienstag
+
 #### **Muss-/Kann-Kriterien**
 
 #### Muss
-
-- Daten Aggregation, Caching
-- Bedienung durch Frontend
+- Daten Aggregation, Caching von Daten aus der Deutschen Bahn API
 - Interaktive Karte
-    - Heatmap mit verspäteten Ankünften, Abfahrten an Stationen
+    - Anklickbare Stationen mit Statistiken über die 
 - Visualisierung von Verspätungen im Netz der Deutschen Bahn
     - Timeline über die letzten X Tage
-- Informationen über Züge mit Verspätung > 60 Min
 
 #### Kann
 - Erweiterung auf europäisches Bahnnetz
-- Prognose für verspätete Züge
-- Merken von mehreren Reisen
-    - Festes Start und Endziel
-- Formular für Einreichen von Verspätungen direkt an DB weitergeleitet
+- Prognose für verspätete Züge anhand der vergangenen Verspätungen
+    - Einfaches ML-Modell
+- Merken von mehreren Reisenrouten
+    - Festes Start und Endziel wird vom User festgelegt
+    - Statistiken über die Verspätungen der Züge auf der Reiseroute
+    - Merken von Verbindungen mit einer Verspätung von über 60 Minuten
+        - Formular zum Ausfüllen, dass direkt gedruckt und an die DB gesendet werden kann
 
 ## 3. Umsetzung / Implementierung
 
+### Projekt-Architektur
 ![Projekt-Architektur](image.png)
+
+### Pitfalls
+- Herausforderungen mit der Deutschen Bahn API
+Dokumentation der API ist teilweise veraltet, lückenhaft oder sogar falsch. 
+API liefert sehr viel Informationen mit, die irrelevant für den Use Case des Projekts  
+
+- Aktualisierung von Änderungen im Fahrplan
+
+- Skalierbarkeit von Systemen (Daten, Struktur)
+
+
+- Zeitmanagement
+Umsetzung aller Muss-Kriterien angesichts der Herausforderungen mit der Deutschen Bahn API und den zeitlichen Rahmen des Labors waren unrealistisch.
+
 
 
 
