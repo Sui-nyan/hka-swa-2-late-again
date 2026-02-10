@@ -103,18 +103,21 @@ Es hauptsächlich aus den Views "Map" und "Connection". "Map" zeigt hier die Deu
 
 
 ### Pitfalls
-- Herausforderungen mit der Deutschen Bahn API
+- **Herausforderungen mit der Deutschen Bahn API:**
 Dokumentation der API ist teilweise veraltet, lückenhaft oder sogar falsch. 
 API liefert sehr viel Informationen mit, die irrelevant für den Use Case des Projekts  
 
-- Aktualisierung von Änderungen im Fahrplan
+- **Aktualisierung von Änderungen im Fahrplan:**
+Da Änderungen im Fahrplan im zwei Minuten-Takt aktualisiert werden, ist es notwendig, dass wir diese Daten auch in diesem zeitlichen Rahmen pollen. Allerdings stellte sich heraus, dass wir in unseren Tests nur 0,5 bis 0,93 Anfragen pro Sekunde an die API stellen. Das heißt wir können in dem zwei Minuten Zeitraum theoretisch nur maximal 120 Bahnhöfe abdecken.
 
-- Skalierbarkeit von Systemen (Daten, Struktur)
+- **Zeitmanagement:**
+Umsetzung aller Muss-Kriterien angesichts der vielen Herausforderungen, die uns während der Entwicklung begegneten, war zeitlich nicht möglich. Wir haben den Scope für das Projekt leider nicht so wählen können, dass wir diese auch erfüllen konnten.
 
-- Zeitmanagement
-Umsetzung aller Muss-Kriterien angesichts der Herausforderungen mit der Deutschen Bahn API und den zeitlichen Rahmen des Labors waren unrealistisch.
+### Limitationen und Ausblick
 
-
+Die Aggregation der Zeitplandifferenzen über vier Tage für die sechs Bahnhöfe (Karlsruhe, Neuburg, Stuttgart, Aalen, Ulm) führte beim Versand an den Client zu einem Datenvolumen von rund 13 MB. Die Datenpunkte wurden im Zwei‑Minuten‑Takt erhoben, wodurch sich schnell eine große Menge historischer Einträge ansammelt. Ohne ein Konzept zur gezielten Datensanierung würde die persistierte Datenbasis in der Datenbank rasch anwachsen und langfristig zu Speicher‑ und Performanceproblemen führen. Für einen persönlichen Tracker mit wenigen ausgewählten Bahnhöfen und einer Historie von einigen Wochen bleibt die Datenmenge jedoch noch handhabbar.
+Auch die Menge der an den Client übertragenen Daten erfordert eine genauere Betrachtung. Der vollständige Tagesfahrplan für Karlsruhe (ohne Änderungen) erreichte in unseren Tests bis zu 22 KB. Würde man die 50 am stärksten frequentierten Bahnhöfe berücksichtigen, ergäbe dies bereits etwa 1 MB allein für die Übertragung der „Soll“-Daten. Damit würde der übliche Richtwert für Webanwendungen von etwa 500 KB bis 1,5 MB pro Seite schnell überschritten, insbesondere wenn zusätzlich Echtzeit‑ oder Abweichungsinformationen übertragen werden.
+Unter diesen Bedingungen erscheint eine Weiterführung der Idee ohne grundlegende Neuplanung der persistierten Datenstrukturen sowie der übertragenen Datenmengen nicht realistisch.
 
 
 ## 4. Fazit
