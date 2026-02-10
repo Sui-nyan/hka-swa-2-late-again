@@ -1,3 +1,36 @@
+# Setup Anmerkung
+
+Dependencies sind mit einem Package Manager der Wahl zu installieren.
+
+```bash
+npm install
+```
+
+Die Prisma Klassen und der Client müssen generiert werden vor starten.
+
+```bash
+npm run generate
+
+// bzw
+
+npx prisma generate
+```
+
+PostgresDB (und ggf NextJS) können per Docker gestartet werden
+
+```
+docker compose up
+// oder nur DB
+docker compose up db
+```
+
+Die Skripte zur Datenaggregation wurde täglich manuell gestartet.
+
+- `import_plans.py` frägt den SollPlan des Tages an (einmal am Tag)
+- `import_plans.py` frägt die "Ist"Pläne im zwei Minuten Tag (starten und laufen lassen)
+- `import_stations.py` frägt alle verfügbaren Stationen ab. (einmal empfohlen)
+
+
 # Laborbericht
 
 ## 1. Einleitung
@@ -99,7 +132,7 @@ Das Backend und Frontend sind keine getrennten Prozesse sondern laufen beide inn
 **Frontend**. Der Frontend Code folgt dem Framework gegebenen "App Router" Struktur. Dabei werden die URL Pfade bestimmt durch die Ordnerstruktur.
 Es hauptsächlich aus den Views "Map" und "Connection". "Map" zeigt hier die Deutschlandkarte und die Übersicht der Verspätungsquoten. "Connection" sollte eine spezifische Route zwischen zwei Bahnhöfen anzeigen und hierbei ausgewählt die Pünktlichkeitsdaten bezueglich dieser Journey anzeigen. Dieses Feature ist leider nur statisch mit Mockdaten umgesetzt, da uns die Journeydaten fehlen, und keine Möglichkeit bestand mit der kostenlosen Bahn-API eine bedeutungsvolle Menge an Daten in kurzen Zeit-Takt zu aggregieren.
 
-**Backend/Endpoints**. Es wird lediglich ein Endpoint angeboten zum tatsächlichen Use Case (Pünktlichkeits-Statistik). Logisch ist das Backend geteilt in ein API Layer (den Endpoints), einem UseCase Layer und einem Persistence Layer in Form von "Repositories". In diesem Fall implementieren diese nur die nötigsten Read Operationen für die Datenbank da es keinen Bedarf für Schreiboperationen von Seiten des Frontends gab. Das Persistence Layer arbeitet mit Prisma ORM und deckt damit die Typisierung und die Aktuell-haltung der Datenmodelle. Zwischen der Persistenz und der API haben wir ein weiteren Layer abstrahiert, in dem die Rohdaten der Datenbank verarbeitet werden. (Hier: Sammeln des Fahrplans und dessen Abweichung). Das API Layer ist lediglich zuständig dafür die Informationen aus dem GET Requests auszulesen, diese mit der Use Case Implementierung weiterzugeben, und letztlich die Antwort als JSON zurückzugeben. **Der Aggregator ist als einzelner Prozess in einem seperaten Container gestaltet. Die Kommunikation des Aggregators erfolgt direkt mit der Datenbank über eine Python ORM.
+**Backend/Endpoints**. Es wird lediglich ein Endpoint angeboten zum tatsächlichen Use Case (Pünktlichkeits-Statistik). Logisch ist das Backend geteilt in ein API Layer (den Endpoints), einem UseCase Layer und einem Persistence Layer in Form von "Repositories". In diesem Fall implementieren diese nur die nötigsten Read Operationen für die Datenbank da es keinen Bedarf für Schreiboperationen von Seiten des Frontends gab. Das Persistence Layer arbeitet mit Prisma ORM und deckt damit die Typisierung und die Aktuell-haltung der Datenmodelle. Zwischen der Persistenz und der API haben wir ein weiteren Layer abstrahiert, in dem die Rohdaten der Datenbank verarbeitet werden. (Hier: Sammeln des Fahrplans und dessen Abweichung). Das API Layer ist lediglich zuständig dafür die Informationen aus dem GET Requests auszulesen, diese mit der Use Case Implementierung weiterzugeben, und letztlich die Antwort als JSON zurückzugeben. **Der Aggregator ist als einzelner Prozess in einem seperaten Container gedacht, wurde aber nur als manuell auszuführendes Skript implementiert. Die Kommunikation des Aggregators erfolgt direkt mit der Datenbank über eine Python ORM.
 
 
 ### Pitfalls
