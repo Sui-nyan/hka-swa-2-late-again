@@ -30,23 +30,26 @@ Die Skripte zur Datenaggregation wurde täglich manuell gestartet.
 - `import_plans.py` frägt die "Ist"Pläne im zwei Minuten Tag (starten und laufen lassen)
 - `import_stations.py` frägt alle verfügbaren Stationen ab. (einmal empfohlen)
 
-
 # Laborbericht
+
 ![img.png](img.png)
 
 ## 1. Einleitung
 
 ### Motivation
+
 In Zeiten, in denen bewusstes Konsumieren und nachhaltiges Reisen aufgrund des Klimawandels immer relevanter werden, steigt auch die Popularität von „Slow Travel” und grünem Reisen gegenüber kurzen und CO2-intensiven Verkehrsmitteln. Nachhaltiges Reisen kann durch Zug-, Busfahren oder Carpooling gewährleistet werden.
 In diesem Projekt befassen wir uns mit der Deutschen Bahn. Die Deutsche Bahn ist leider nicht für ihre Pünktlichkeit und Zuverlässigkeit bekannt, doch es gibt wenige Alternativen, wenn man eine Zugreise planen möchte.
 Vor diesem Hintergrund soll das folgende Projekt bei der Planung von Zugreisen innerhalb Deutschlands helfen. In einer Webanwendung sollen statistische Informationen über die Pünktlichkeit von Zügen an verschiedenen Stationen der Deutschen Bahn dargestellt werden. Diese Informationen sollen Reisenden dabei helfen, datengetriebene Entscheidungen für ihre nächste Zugreise zu treffen.
 Zur Vertiefung: Dieses Projekt zielt darauf ab, Nutzerinnen und Nutzern fundierte Entscheidungsgrundlagen zu liefern, indem es historische Pünktlichkeitsdaten der Deutschen Bahn systematisch sammelt, aufbereitet und visualisiert. Neben der praktischen Reiseplanung soll die Anwendung Trends und Schwachstellen im Netz sichtbar machen, um sowohl Pendlern als auch Forschenden und Verkehrsplaner:innen Erkenntnisse über wiederkehrende Verzögerungsmuster zu bieten. Ein weiterer Motivationsaspekt ist die Förderung nachhaltiger Mobilitätsentscheidungen: verlässliche Informationen über Zugqualität stärken das Vertrauen in den öffentlichen Verkehr.
 
 ### Zielsetzung
-Das Web-Projekt soll aus zwei Seiten bestehen. Eine Seite zeigt eine Übersicht der Deutschlandkarte mit ausgewählten Stationen der Deutschen Bahn. Je nach relativer Anzahl verspäteter Züge wird die Station entsprechend rot eingefärbt. 
+
+Das Web-Projekt soll aus zwei Seiten bestehen. Eine Seite zeigt eine Übersicht der Deutschlandkarte mit ausgewählten Stationen der Deutschen Bahn. Je nach relativer Anzahl verspäteter Züge wird die Station entsprechend rot eingefärbt.
 Auf der zweiten Seite kann der Nutzer eine konkrete Zug-Verbindung abonnieren. Sobald diese Verbindung festgelegt wird werden alle möglichen Verbindungen zwischen diesen beiden Stationen angezeigt und Statisken zu dieser Verbindung ausgewertet.
 
 **Konkrete Zielsetzungen**
+
 - Bereitstellung einer interaktiven Netzwerk-Übersicht, die Bahnhöfe nach Verspätungsquote visualisiert und dynamisch filterbar ist (Verkehrstyp, Ankunft/Abfahrt, Zeitraum).
 - Implementierung eines Abonnementsystems für Verbindungen mit Detailauswertungen (Umstiege, Alternativrouten, historische Pünktlichkeitsstatistiken).
 - Aufbau einer zuverlässigen Daten-Pipeline (API-Abfrage, Persistenz in PostgreSQL, Aggregation, Caching) für reproduzierbare Analysen.
@@ -71,6 +74,7 @@ Aus den oben genannten Requirements verfeinern wir einige zu messbaren Requireme
 - Bekannte Programmiersprache
 
 ## 2. Grundlagen
+
 ### Detaillierte Problemstellung
 
 #### **Technologieauswahl**
@@ -87,40 +91,44 @@ Das Abfragen und Speichern von Daten der Deutschen Bahn API erfolgt seperat übe
 
 Für die generelle Orchestrierung nutzen wir Docker - spezifischer Docker Compose. Die Container-isierung als Grundvoraussetzung bietet eine grobe, aber strikte Trennung von Datenbank, Datenaggregator und dem User-gewanndten Webservice. Dies soll unnötige Abhängigkeiten mindern und vereinfacht auch die spätere weitere Modularisierung, falls notwendig.
 
-
 #### **Use Cases**
+
 Das System verfolgt zwei zentrale Use Cases: Zum einen eine interaktive Heatmap, die Bahnhöfe nach ihrer relativen Verspätungsquote farblich darstellt und sich dynamisch nach Verkehrstyp (Nah-/Fernverkehr/alle), Ankunft/Abfahrt und Datum filtern lässt, um schnell problematische Abschnitte im Netz zu identifizieren.
 Zum anderen eine Verbindungsauswertung, die es Nutzern ermöglicht, konkrete Reisen (inkl. Umstiegen) zu abonnieren und für diese historische Pünktlichkeitsstatistiken, zeitliche Muster sowie alternative Routen bereitzustellen – nützlich zur Reiseplanung, Abschätzung von Ausfallrisiken und zur Vorbereitung von Entschädigungsanträgen. Beide Funktionen bieten aggregierte Kennzahlen, Visualisierungen und Exportmöglichkeiten sowie die Option, Benachrichtigungen bei relevanten Änderungen zu erhalten, sodass Pendler, Gelegenheitsreisende und Forschende datenbasierte Entscheidungen treffen können.
 
 #### User Journey
+
 1. Student möchte in der vorlesungsfreien Zeit nach Hause reisen.
 2. Student hat kein Geld für ein ICE-Ticket für eine direkte Verbindung und schaut sich Alternativen im Nahverkehr an
 3. Student schaut sich die Statistiken der letzten zwei Wochen für die vorgenommene Strecke an
-4. Student sieht erkennt, dass über Stadt A häufiger Bahnen verspätet sind als über Stadt B und die Bahnen dazu tendieren am wochentag pünktlicher anzukommen als am Wochenende. 
+4. Student sieht erkennt, dass über Stadt A häufiger Bahnen verspätet sind als über Stadt B und die Bahnen dazu tendieren am wochentag pünktlicher anzukommen als am Wochenende.
 5. Student entscheidet sich für die Reise über Stadt B am nächsten Dienstag
 
 #### **Muss-/Kann-Kriterien**
 
 #### Muss
+
 - Daten Aggregation, Caching von Daten aus der Deutschen Bahn API
 - Interaktive Karte
-    - Anklickbare Stationen mit Statistiken über die 
+  - Anklickbare Stationen mit Statistiken über die
 - Visualisierung von Verspätungen im Netz der Deutschen Bahn
-    - Timeline über die letzten X Tage
+  - Timeline über die letzten X Tage
 
 #### Kann
+
 - Erweiterung auf europäisches Bahnnetz
 - Prognose für verspätete Züge anhand der vergangenen Verspätungen
-    - Einfaches ML-Modell
+  - Einfaches ML-Modell
 - Merken von mehreren Reisenrouten
-    - Festes Start und Endziel wird vom User festgelegt
-    - Statistiken über die Verspätungen der Züge auf der Reiseroute
-    - Merken von Verbindungen mit einer Verspätung von über 60 Minuten
-        - Formular zum Ausfüllen, dass direkt gedruckt und an die DB gesendet werden kann
+  - Festes Start und Endziel wird vom User festgelegt
+  - Statistiken über die Verspätungen der Züge auf der Reiseroute
+  - Merken von Verbindungen mit einer Verspätung von über 60 Minuten
+    - Formular zum Ausfüllen, dass direkt gedruckt und an die DB gesendet werden kann
 
 ## 3. Umsetzung / Implementierung
 
 ### Projekt-Architektur
+
 ![Projekt-Architektur](image.png)
 
 ### Was umgesetzt wurde
@@ -133,19 +141,20 @@ Das Backend und Frontend sind keine getrennten Prozesse sondern laufen beide inn
 **Frontend**. Der Frontend Code folgt dem Framework gegebenen "App Router" Struktur. Dabei werden die URL Pfade bestimmt durch die Ordnerstruktur.
 Es hauptsächlich aus den Views "Map" und "Connection". "Map" zeigt hier die Deutschlandkarte und die Übersicht der Verspätungsquoten. "Connection" sollte eine spezifische Route zwischen zwei Bahnhöfen anzeigen und hierbei ausgewählt die Pünktlichkeitsdaten bezueglich dieser Journey anzeigen. Dieses Feature ist leider nur statisch mit Mockdaten umgesetzt, da uns die Journeydaten fehlen, und keine Möglichkeit bestand mit der kostenlosen Bahn-API eine bedeutungsvolle Menge an Daten in kurzen Zeit-Takt zu aggregieren.
 
-**Backend/Endpoints**. Es wird lediglich ein Endpoint angeboten zum tatsächlichen Use Case (Pünktlichkeits-Statistik). Dieser gibt alle Stops eines spezifischen Bahnhofes zu einem bestimmte Tag wieder. Diese Stops beinhalten auch verspätete Zeiten (`ct` changed time) oder Ausfallzeiten (`clt` cancellation time) falls welche vorliegen. Logisch ist das Backend geteilt in ein API Layer (den Endpoints), einem UseCase Layer und einem Persistence Layer in Form von "Repositories". In diesem Fall implementieren diese nur die nötigsten Read Operationen für die Datenbank da es keinen Bedarf für Schreiboperationen von Seiten des Frontends gab. Das Persistence Layer arbeitet mit Prisma ORM und deckt damit die Typisierung und die Aktuell-haltung der Datenmodelle. Zwischen der Persistenz und der API haben wir ein weiteren Layer abstrahiert, in dem die Rohdaten der Datenbank verarbeitet werden. (Hier: Sammeln des Fahrplans und dessen Abweichung). Das API Layer ist lediglich zuständig dafür die Informationen aus dem GET Requests auszulesen, diese mit der Use Case Implementierung weiterzugeben, und letztlich die Antwort als JSON zurückzugeben. **Der Aggregator ist als einzelner Prozess in einem seperaten Container gedacht, wurde aber nur als manuell auszuführendes Skript implementiert. Die Kommunikation des Aggregators erfolgt direkt mit der Datenbank über eine Python ORM.
-
+**Backend/Endpoints**. Es wird ein Endpoint angeboten zum tatsächlichen Use Case (Pünktlichkeits-Statistik). Dieser gibt alle Stops eines spezifischen Bahnhofes zu einem bestimmte Tag wieder. Diese Stops beinhalten auch verspätete Zeiten (`ct` changed time) oder Ausfallzeiten (`clt` cancellation time) falls welche vorliegen. Zusätzlich existiert `api/stations`, welches Openstations API der deutschen bahn abfragt und filtert - und letztendlich nur relevante Daten über die Bahnhöfe für die Darstellung in der Deutschlandkarte liefert (Coordinaten, Eva, Name). Bei diesen Bahnhöfen handelt es sich um "Knotenbahnhöfe".
+Logisch ist das Backend geteilt in ein API Layer (den Endpoints), einem UseCase Layer und einem Persistence Layer in Form von "Repositories". In diesem Fall implementieren diese nur die nötigsten Read Operationen für die Datenbank da es keinen Bedarf für Schreiboperationen von Seiten des Frontends gab. Das Persistence Layer arbeitet mit Prisma ORM und deckt damit die Typisierung und die Aktuell-haltung der Datenmodelle. Zwischen der Persistenz und der API haben wir ein weiteren Layer abstrahiert, in dem die Rohdaten der Datenbank verarbeitet werden. (Hier: Sammeln des Fahrplans und dessen Abweichung). Das API Layer ist lediglich zuständig dafür die Informationen aus dem GET Requests auszulesen, diese mit der Use Case Implementierung weiterzugeben, und letztlich die Antwort als JSON zurückzugeben. \*\*Der Aggregator ist als einzelner Prozess in einem seperaten Container gedacht, wurde aber nur als manuell auszuführendes Skript implementiert. Die Kommunikation des Aggregators erfolgt direkt mit der Datenbank über eine Python ORM.
 
 ### Pitfalls
+
 - **Herausforderungen mit der Deutschen Bahn API:**
-Dokumentation der API ist teilweise veraltet, lückenhaft oder sogar falsch. 
-API liefert sehr viel Informationen mit, die irrelevant für den Use Case des Projekts  
+  Dokumentation der API ist teilweise veraltet, lückenhaft oder sogar falsch.
+  API liefert sehr viel Informationen mit, die irrelevant für den Use Case des Projekts
 
 - **Aktualisierung von Änderungen im Fahrplan:**
-Da Änderungen im Fahrplan im zwei Minuten-Takt aktualisiert werden, ist es notwendig, dass wir diese Daten auch in diesem zeitlichen Rahmen pollen. Allerdings stellte sich heraus, dass wir in unseren Tests nur 0,5 bis 0,93 Anfragen pro Sekunde an die API stellen. Das heißt wir können in dem zwei Minuten Zeitraum theoretisch nur maximal 120 Bahnhöfe abdecken.
+  Da Änderungen im Fahrplan im zwei Minuten-Takt aktualisiert werden, ist es notwendig, dass wir diese Daten auch in diesem zeitlichen Rahmen pollen. Allerdings stellte sich heraus, dass wir in unseren Tests nur 0,5 bis 0,93 Anfragen pro Sekunde an die API stellen. Das heißt wir können in dem zwei Minuten Zeitraum theoretisch nur maximal 120 Bahnhöfe abdecken.
 
 - **Zeitmanagement:**
-Umsetzung aller Muss-Kriterien angesichts der vielen Herausforderungen, die uns während der Entwicklung begegneten, war zeitlich nicht möglich. Wir haben den Scope für das Projekt leider nicht so wählen können, dass wir diese auch erfüllen konnten.
+  Umsetzung aller Muss-Kriterien angesichts der vielen Herausforderungen, die uns während der Entwicklung begegneten, war zeitlich nicht möglich. Wir haben den Scope für das Projekt leider nicht so wählen können, dass wir diese auch erfüllen konnten.
 
 ### Limitationen und Ausblick
 
@@ -153,8 +162,8 @@ Die Aggregation der Zeitplandifferenzen über vier Tage für die sechs Bahnhöfe
 Auch die Menge der an den Client übertragenen Daten erfordert eine genauere Betrachtung. Der vollständige Tagesfahrplan für Karlsruhe (ohne Änderungen) erreichte in unseren Tests bis zu 22 KB. Würde man die 50 am stärksten frequentierten Bahnhöfe berücksichtigen, ergäbe dies bereits etwa 1 MB allein für die Übertragung der „Soll“-Daten. Damit würde der übliche Richtwert für Webanwendungen von etwa 500 KB bis 1,5 MB pro Seite schnell überschritten, insbesondere wenn zusätzlich Echtzeit‑ oder Abweichungsinformationen übertragen werden.
 Unter diesen Bedingungen erscheint eine Weiterführung der Idee ohne grundlegende Neuplanung der persistierten Datenstrukturen sowie der übertragenen Datenmengen nicht realistisch.
 
-
 ## 4. Fazit
+
 In den ersten Wochen erschien uns das Projekt durchaus machbar für zwei Personen. Doch während der Erarbeitung mussten wir feststellen, dass uns einige Herausforderungen begegneten, die wir anfangs nicht wahrgenommen hatten.
 Die vollständige Umsetzung all unserer Muss-Kriterien stellte sich für zwei Personen im Rahmen von 50 bis 60 Stunden pro Person als schwierig heraus. Wir waren gezwungen, Prioritäten zu setzen und Abstriche zu machen, damit wir die Deadlines einhalten können.
 Es war insgesamt eine interessante Erfahrung, zu experimentieren, wie große Mengen an Daten im Webbrowser darstellbar gemacht werden können, und wir lernten dadurch auch die Grenzen unserer Browser kennen, als diese während der Entwicklung teilweise feststeckten und abstürzten.
