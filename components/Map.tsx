@@ -9,12 +9,13 @@ import {Tooltip} from "@heroui/tooltip";
 
 interface MapProps {
     data: any;
+    date?: Date;
     stations?: StationPoint[];
     width?: number;
     height?: number;
 }
 
-const Map: React.FC<MapProps> = ({ data, stations = [], width = 800, height = 500 }) => {
+const Map: React.FC<MapProps> = ({date, data, stations = [], width = 800, height = 500 }) => {
     const geo = useMemo(() => {
         if (!data) return null;
         if (data.type === 'Topology' && data.objects) {
@@ -81,7 +82,7 @@ const Map: React.FC<MapProps> = ({ data, stations = [], width = 800, height = 50
             </svg>
 
             {selected && (
-                <StationModal selected={selected} onClickAction={() => setSelected(null)}/>
+                <StationModal date={undefined} selected={selected} onClickAction={() => setSelected(null)}/>
             )}
         </div>
     );
