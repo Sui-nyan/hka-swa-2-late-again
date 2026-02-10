@@ -32,6 +32,7 @@ Die Skripte zur Datenaggregation wurde täglich manuell gestartet.
 
 
 # Laborbericht
+![img.png](img.png)
 
 ## 1. Einleitung
 
