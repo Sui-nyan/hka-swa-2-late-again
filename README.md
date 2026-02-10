@@ -88,3 +88,5 @@ Umsetzung aller Muss-Kriterien angesichts der Herausforderungen mit der Deutsche
 
 ## 4. Fazit
 
+## Präsentationsfolien
+Finden sich [hier](Software%20Architektur.pdf)
