@@ -1,7 +1,9 @@
 import { NextRequest } from "next/server";
+import {prisma} from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
-  const url = request.nextUrl;
+  const stations = await prisma.station.findMany();
+  return Response.json(stations);
 }
 
 export async function HEAD(request: Request) {}
