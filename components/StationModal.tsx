@@ -8,6 +8,7 @@ import {Button} from "@heroui/button";
 
 interface Props {
     selected: StationPoint;
+    date?: Date;
     onClickAction: () => void;
 }
 
@@ -24,6 +25,8 @@ export function StationModal({ selected, onClickAction }: Props) {
     React.useEffect(() => {
         setMounted(true);
     }, []);
+
+    let stationData = fetch(`/api/stations-summary/${selected.id}`).then(res => res.json());
 
     const dark = mounted && resolvedTheme === "dark";
 

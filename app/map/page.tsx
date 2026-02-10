@@ -1,25 +1,38 @@
-"use client";
 import { title } from "@/components/primitives";
 import {BasicMap} from "@/app/map/components/BasicMap";
 import MapFilter from "@/app/map/components/MapFilter";
 import React from "react";
+import {StationPoint} from "@/components/types";
+import {Station} from "@/types";
 
-export default function AboutPage() {
-    const [submitted, setSubmitted] = React.useState<{ startDate: FormDataEntryValue | null; endDate: FormDataEntryValue | null } | null>(null);
+export default async function AboutPage() {
+    const cacheKey = '__stationsCache';
+    let stationsData = (globalThis as any)[cacheKey] as any | undefined;
 
-    function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const startDate = formData.get("startDate");
-        const endDate = formData.get("endDate");
-        setSubmitted({ startDate, endDate });
+    const ORIGIN = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+    if (!stationsData) {
+        const resp = await fetch(`${ORIGIN}/api/stations`);
+        stationsData = await resp.json();
+        (globalThis as any)[cacheKey] = stationsData;
     }
+
+    const stations : StationPoint[]  = stationsData.map((s: Station) => {
+        const eva = s.evaNumbers?.[0];
+        const coords = eva?.geographicCoordinates
+            ? [eva.geographicCoordinates.coordinates[0], eva.geographicCoordinates.coordinates[1]]
+            : [0, 0];
+        return {
+            id: eva?.number ?? s.name,
+            name: s.name,
+            coordinates: coords
+        }
+    });
 
   return (
       <section className="flex flex-col items-center justify-center gap-4">
           <h1 className={title()}>Deutschlandkarte</h1>
-          <MapFilter onSubmit={onSubmit}/>
-          <BasicMap width={1000} height={700}/>
+          <MapFilter/>
+          <BasicMap stationData={stations} date={undefined} width={1000} height={700}/>
       </section>
   );
 }

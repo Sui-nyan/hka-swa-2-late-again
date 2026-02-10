@@ -95,6 +95,74 @@
           "isMain": true
         }
       ]
+    },
+
+    {
+      "number": 1,
+      "ifopt": "de:05334:1008",
+      "name": "Aachen Hbf",
+      "mailingAddress": {
+        "city": "Aachen",
+        "zipcode": "52064",
+        "street": "Bahnhofstr.  2a"
+      },
+      "regionalbereich": {
+        "number": 4,
+        "name": "RB West",
+        "shortName": "RB West"
+      },
+      "aufgabentraeger": {
+        "shortName": "go.R",
+        "name": "Zweckverband go.Rheinland GmbH"
+      },
+
+      "timeTableOffice": {
+        "email": "DBS.Fahrplan.NordrheinWestfalen@deutschebahn.com",
+        "name": "Köln"
+      },
+      "szentrale": {
+        "number": 15,
+        "publicPhoneNumber": "0203/30171055",
+        "name": "Duisburg Hbf"
+      },
+      "stationManagement": {
+        "number": 45,
+        "name": "Düsseldorf"
+      },
+      "evaNumbers": [
+        {
+          "number": 8000001,
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              6.091499,
+              50.7678
+            ]
+          },
+          "isMain": true
+        }
+      ],
+      "ril100Identifiers": [
+        {
+          "rilIdentifier": "KA",
+          "isMain": true,
+          "hasSteamPermission": true,
+          "steamPermission": "unrestricted",
+          "geographicCoordinates": {
+            "type": "Point",
+            "coordinates": [
+              6.091499,
+              50.7678
+            ]
+          },
+          "primaryLocationCode": "DE10002"
+        }
+      ],
+      "productLine": {
+        "productLine": "Knotenbahnhof",
+        "segment": "Großstadtknoten"
+      },
+      "wirelessLan": {}
     }
   ]
 }
