@@ -43,6 +43,7 @@ bun.lockb
 
 # database
 pg-data/**
+pg-data*/
 .env
 /.pnpm-store
 
