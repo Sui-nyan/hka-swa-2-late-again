@@ -118,4 +118,6 @@ Umsetzung aller Muss-Kriterien angesichts der Herausforderungen mit der Deutsche
 
 
 ## 4. Fazit
-
+In den ersten Wochen erschien uns das Projekt durchaus machbar für zwei Personen. Doch während der Erarbeitung mussten wir feststellen, dass uns einige Herausforderungen begegneten, die wir anfangs nicht wahrgenommen hatten.
+Die vollständige Umsetzung all unserer Muss-Kriterien stellte sich für zwei Personen im Rahmen von 50 bis 60 Stunden pro Person als schwierig heraus. Wir waren gezwungen, Prioritäten zu setzen und Abstriche zu machen, damit wir die Deadlines einhalten können.
+Es war insgesamt eine interessante Erfahrung, zu experimentieren, wie große Mengen an Daten im Webbrowser darstellbar gemacht werden können, und wir lernten dadurch auch die Grenzen unserer Browser kennen, als diese während der Entwicklung teilweise feststeckten und abstürzten.
